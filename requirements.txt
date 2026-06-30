@@ -1,0 +1,23 @@
+# Core framework
+Django==4.2.30
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.5.1
+drf-spectacular==0.29.0
+django-filter==23.5
+django-cors-headers==4.9.0
+
+# Database
+psycopg2-binary==2.9.12
+
+# Async tasks
+celery==5.6.3
+redis==8.0.1
+
+# HTTP client (SWAPI integration)
+requests==2.34.2
+
+# Config / 12-factor
+python-decouple==3.8
+
+# WSGI server (production)
+gunicorn==23.0.0
