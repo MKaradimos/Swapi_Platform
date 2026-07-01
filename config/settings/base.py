@@ -192,8 +192,7 @@ CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 
 # Optional scheduled sync: enabled by running the `celery_beat` service
 # (docker compose --profile scheduled-sync up). Off by default so the
-# assessment's core "fetch and store" requirement isn't tied to a
-# long-running scheduler — manual/admin-triggered sync covers that.
+# manual/admin-triggered sync covers the common case without a long-running scheduler.
 CELERY_BEAT_SCHEDULE = {
     "daily-swapi-sync": {
         "task": "apps.swapi_sync.tasks.sync_swapi_catalog",

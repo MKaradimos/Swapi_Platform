@@ -15,9 +15,8 @@ class TriggerSyncView(APIView):
     Kick off an asynchronous full catalog sync from SWAPI via Celery.
 
     Returns immediately with the Celery task id rather than blocking the
-    request for however long the sync takes — the assessment's "fetch and
-    store" requirement doesn't mandate synchronous behaviour, and a
-    request-blocking sync would be a poor pattern for a real API anyway.
+    request for however long the sync takes — a request-blocking sync
+    would be a poor pattern for a production API.
     Restricted to staff users since it mutates the shared catalog dataset.
     """
 

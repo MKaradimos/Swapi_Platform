@@ -103,7 +103,7 @@ class FilmViewSet(_VotableViewSetMixin, viewsets.ReadOnlyModelViewSet):
 
     Films are populated exclusively via the SWAPI sync process (see
     apps.swapi_sync) rather than direct create/update/delete through this
-    API, matching the assessment's "fetch and store" requirement.
+    API.
     """
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
