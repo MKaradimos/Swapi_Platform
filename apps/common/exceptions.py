@@ -1,22 +1,4 @@
-"""
-Centralised exception handling for the API.
-
-Goal: every error the client sees — whether it's a validation error, a 404,
-a throttle, an auth failure, or an unhandled server exception — has the same
-predictable JSON shape:
-
-    {
-        "error": {
-            "code": "validation_error",
-            "message": "Human readable summary.",
-            "details": {...}   # optional, field-level or extra context
-        }
-    }
-
-This makes the API pleasant to consume from a frontend or test suite: callers
-never have to guess whether an error is a flat string, a list, or a nested
-dict depending on which DRF exception happened to fire.
-"""
+"""Custom exception handler: normalises all API errors to a consistent JSON shape."""
 
 import logging
 

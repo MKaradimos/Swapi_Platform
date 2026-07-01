@@ -1,12 +1,4 @@
-"""
-Celery tasks for SWAPI synchronisation.
-
-The task body stays thin on purpose: all real logic lives in
-services/sync.py, which is plain Python with no Celery dependency and is
-directly unit-testable. The task adds the operational concerns Celery is
-good at — retries with exponential backoff when SWAPI is transiently
-unreachable, and structured logging of the outcome.
-"""
+"""Celery tasks for SWAPI sync with exponential backoff retry."""
 
 import logging
 

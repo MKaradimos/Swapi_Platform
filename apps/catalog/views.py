@@ -21,18 +21,7 @@ from .serializers import (
 
 
 def _with_vote_annotations(queryset, model, user):
-    """
-    Annotate each row with `annotated_vote_count` and `annotated_is_voted`
-    via correlated subqueries rather than per-row service calls. Both use
-    the same OuterRef("pk") pattern so neither distorts pagination/other
-    aggregates on the main queryset (a join + GROUP BY would).
-
-    `annotated_is_voted` is what eliminates the N+1 that previously
-    existed in the serializer: without it, `get_is_voted_by_me()` ran one
-    extra `Vote.objects.filter(...).exists()` query per row in a list
-    response. With it, "did the current user vote for this row" is
-    computed in the same query as the row itself.
-    """
+    """Annotate queryset with vote_count and is_voted via correlated subqueries (avoids N+1)."""
     content_type = ContentType.objects.get_for_model(model)
 
     vote_counts = (
@@ -41,13 +30,7 @@ def _with_vote_annotations(queryset, model, user):
         .annotate(count=Count("id"))
         .values("count")
     )
-    # Coalesce to 0: the inner GROUP BY subquery returns no row (hence SQL
-    # NULL) for any item with zero votes — the overwhelmingly common case.
-    # Without this, `annotated_vote_count` would be None for every
-    # unvoted item, which the serializer's "is the annotation present"
-    # check (`is not None`) would misread as "annotation missing" and
-    # fall back to a per-row query — silently reintroducing the same N+1
-    # this annotation exists to avoid.
+    # Coalesce to 0: subquery returns NULL for items with zero votes.
     queryset = queryset.annotate(annotated_vote_count=Coalesce(Subquery(vote_counts), Value(0)))
 
     if user is not None and user.is_authenticated:
@@ -56,10 +39,6 @@ def _with_vote_annotations(queryset, model, user):
         )
         queryset = queryset.annotate(annotated_is_voted=Exists(is_voted))
     else:
-        # No authenticated user on the request (anonymous browsing): every
-        # row is trivially "not voted by me" — annotate a constant instead
-        # of an Exists() subquery comparing against a non-existent user,
-        # which is both unnecessary and semantically odd to construct.
         queryset = queryset.annotate(annotated_is_voted=Value(False))
 
     return queryset
@@ -78,11 +57,7 @@ class _VotableViewSetMixin:
         instance = self.get_object()
         _vote, created = cast_vote(request.user, instance)
 
-        # The instance fetched by get_object() carries a vote_count
-        # annotation computed *before* this request's vote/un-vote
-        # mutation. Re-fetching through the same annotated queryset
-        # guarantees the response reflects the post-mutation count rather
-        # than serving a stale in-memory value.
+            # Re-fetch to get updated vote count after mutation.
         instance = self.get_queryset().get(pk=instance.pk)
         serializer = self.get_serializer(instance)
         return Response(
@@ -90,10 +65,6 @@ class _VotableViewSetMixin:
             status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
         )
 
-    # ScopedRateThrottle reads `throttle_scope` off the view, so the vote
-    # action (and only the vote action) needs its own scope. Setting it
-    # here means it applies regardless of which catalog viewset mixes
-    # this in, without repeating throttle wiring per viewset.
     vote.throttle_scope = "vote"
 
 

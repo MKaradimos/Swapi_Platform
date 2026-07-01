@@ -1,10 +1,4 @@
-"""
-Service layer for voting.
-
-Keeps the "what counts as a votable item" allow-list and the toggle
-semantics (vote / un-vote on repeated POST) out of the view layer, so
-views stay thin and this logic is independently testable.
-"""
+"""Voting service: toggle vote/un-vote logic and allow-list validation."""
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError
@@ -23,18 +17,7 @@ def _validate_votable(instance) -> None:
 
 
 def cast_vote(user, instance) -> tuple[Vote | None, bool]:
-    """
-    Toggle a user's vote on `instance`.
-
-    Returns (vote_or_none, created):
-      - (Vote, True)  -> a new vote was created
-      - (None, False) -> an existing vote was found and removed (un-vote)
-
-    Race-safety: two concurrent requests to vote for the same item by the
-    same user will hit the unique_together constraint; the IntegrityError
-    is caught and treated as "someone else just created it", so we
-    re-fetch and remove it consistently rather than erroring out.
-    """
+    """Toggle vote on instance. Returns (vote, True) on create or (None, False) on delete."""
     _validate_votable(instance)
     content_type = ContentType.objects.get_for_model(instance)
 
@@ -50,8 +33,7 @@ def cast_vote(user, instance) -> tuple[Vote | None, bool]:
         vote = Vote.objects.create(user=user, content_type=content_type, object_id=instance.pk)
         return vote, True
     except IntegrityError:
-        # Lost a race to a concurrent request creating the same vote;
-        # treat it the same as "vote already existed" and remove it.
+        # Concurrent request created the same vote first; treat as un-vote.
         Vote.objects.filter(user=user, content_type=content_type, object_id=instance.pk).delete()
         return None, False
 

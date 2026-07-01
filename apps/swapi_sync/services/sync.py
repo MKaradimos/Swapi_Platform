@@ -1,17 +1,4 @@
-"""
-Service layer translating SWAPI payloads into Catalog model rows.
-
-Sync order matters: Films must exist before Starships/Characters can
-attach M2M relations to them, and Starships must exist before Characters
-can attach to them. Each entity type is upserted by its `swapi_url`
-(SWAPI's stable identifier), so repeated syncs are idempotent rather than
-producing duplicates.
-
-This module is deliberately decoupled from Celery — `run_full_sync()` is a
-plain function that can be called directly (management command, tests) or
-wrapped by a Celery task (apps/swapi_sync/tasks.py). Keeping orchestration
-logic out of the task body keeps it testable without a broker.
-"""
+"""Sync service: translates SWAPI payloads into catalog model rows via idempotent upserts."""
 
 import logging
 from dataclasses import dataclass, field

@@ -1,13 +1,4 @@
-"""
-Thin HTTP client around SWAPI.
-
-Responsibilities are intentionally narrow: issue HTTP requests, retry
-transient failures, paginate, and translate transport-level problems into
-the project's own exception types. It knows nothing about Django models —
-that translation happens one layer up, in services/sync.py. This separation
-means the client can be unit-tested with `responses` purely against HTTP
-semantics, independent of the database.
-"""
+"""HTTP client for SWAPI: retries, pagination, and error translation."""
 
 import logging
 import time
@@ -42,13 +33,7 @@ class SwapiClient:
         self.session = session or requests.Session()
 
     def _get(self, url: str) -> dict:
-        """
-        Issue a single GET with retry-on-transient-failure semantics.
-
-        Retries on connection errors, timeouts, and 5xx responses (the
-        kinds of failures that are plausibly transient). 4xx responses are
-        not retried — they indicate a request that will never succeed as-is.
-        """
+        """GET with retry on timeouts, connection errors, and 5xx responses."""
         last_exc: Exception | None = None
 
         for attempt in range(1, self.max_retries + 1):
