@@ -1,10 +1,4 @@
-"""
-Shared pytest fixtures available to every test module without an import.
-
-Keeping fixtures here (rather than duplicating user/client setup in every
-test file) follows the same DRY principle the rest of the codebase
-applies to models/services.
-"""
+"""Shared pytest fixtures — available to all tests without explicit import."""
 
 import pytest
 from rest_framework.test import APIClient

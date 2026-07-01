@@ -6,13 +6,7 @@ from .models import Character, Film, Starship
 
 
 class _VoteAwareSerializer(serializers.ModelSerializer):
-    """
-    Mixin adding `vote_count` and `is_voted_by_me` to any catalog
-    serializer. `vote_count` is expected to be annotated onto the queryset
-    by the view (see catalog/views.py) for efficiency — falling back to a
-    per-instance count() only if it wasn't, so the serializer still works
-    correctly (just less efficiently) if used standalone.
-    """
+    """Base serializer adding vote_count and is_voted_by_me fields from queryset annotations."""
 
     vote_count = serializers.SerializerMethodField()
     is_voted_by_me = serializers.SerializerMethodField()
