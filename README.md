@@ -57,12 +57,6 @@ cd swapi_platform
 cp .env.example .env
 ```
 
-Open `.env` and add the following line (required for local HTTP access):
-
-```
-SECURE_SSL_REDIRECT=False
-```
-
 Then start everything:
 
 ```bash
