@@ -7,21 +7,7 @@ from apps.common.models import TimeStampedModel
 
 
 class Vote(TimeStampedModel):
-    """
-    A single user's vote for a favourite catalog item.
-
-    Uses a GenericForeignKey rather than three separate FK columns
-    (character/film/starship) or three separate Vote subclasses. This
-    keeps voting logic, serializers, and permission checks in one place
-    instead of tripled across entity types, at the cost of losing a
-    database-level FK constraint on the target — acceptable here since
-    the target is always validated against an allow-list of catalog
-    models at the serializer/service layer (see services.py).
-
-    The unique_together constraint is what actually enforces "one vote
-    per user per item": a second vote attempt should toggle/remove the
-    existing vote rather than create a duplicate row (see VotingService).
-    """
+    """User vote for a catalog item via GenericForeignKey (one vote per user per item)."""
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="votes"

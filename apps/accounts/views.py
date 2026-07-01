@@ -8,11 +8,7 @@ from .serializers import RegisterSerializer, UserSerializer
 
 
 class RegisterView(generics.CreateAPIView):
-    """
-    Register a new user account and immediately issue a JWT token pair,
-    so the client doesn't need a separate login round-trip right after
-    signup.
-    """
+    """Register a new account and return a JWT token pair."""
 
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
@@ -38,12 +34,7 @@ class RegisterView(generics.CreateAPIView):
 
 
 class LoginView(TokenObtainPairView):
-    """
-    Thin subclass of simplejwt's TokenObtainPairView adding only a
-    throttle scope. Behaviour (request/response shape, credential
-    checking) is entirely inherited and unchanged — this exists solely
-    so login attempts are rate-limited like registration is.
-    """
+    """Rate-limited JWT login."""
 
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "auth"
