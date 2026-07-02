@@ -53,7 +53,7 @@ DRF Views/ViewSets ──► Service layer (services.py) ──► Models
 
 ```bash
 git clone <repository-url>
-cd swapi_platform
+cd Swapi_Platform
 cp .env.example .env
 ```
 
@@ -81,7 +81,7 @@ docker compose exec web python manage.py createsuperuser
 **Run the test suite:**
 
 ```bash
-docker compose exec web python -m pytest --ds=config.settings.test
+docker compose exec web python -m pytest --no-cov --ds=config.settings.test
 ```
 
 **Stop:**
@@ -135,7 +135,7 @@ pytest
 **Inside Docker:**
 
 ```bash
-docker compose exec web python -m pytest --ds=config.settings.test
+docker compose exec web python -m pytest --no-cov --ds=config.settings.test
 ```
 
 94 tests, 98% coverage. HTML report written to `htmlcov/`. All external SWAPI calls are mocked — no real network requests.
