@@ -81,7 +81,7 @@ docker compose exec web python manage.py createsuperuser
 **Run the test suite:**
 
 ```bash
-docker compose exec web python -m pytest --no-cov --ds=config.settings.test
+docker compose exec web python -m pytest --ds=config.settings.test
 ```
 
 **Stop:**
