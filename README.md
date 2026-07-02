@@ -125,21 +125,20 @@ celery -A config worker --loglevel=info
 
 ## Running tests
 
-**Locally (recommended):**
+**Locally:**
 
 ```bash
+pip install -r requirements-dev.txt
 pytest
 ```
-
-94 tests, 98% coverage. Fails the build if coverage drops below 80%.
 
 **Inside Docker:**
 
 ```bash
-docker compose exec web python -m pytest --no-cov --ds=config.settings.test
+docker compose exec web python -m pytest --ds=config.settings.test
 ```
 
-All external SWAPI calls are mocked with the `responses` library — no real network requests. Celery runs synchronously in tests (`CELERY_TASK_ALWAYS_EAGER`).
+94 tests, 98% coverage. HTML report written to `htmlcov/`. All external SWAPI calls are mocked — no real network requests.
 
 ---
 
