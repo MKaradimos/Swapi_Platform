@@ -15,8 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    """Handles new user signup with password confirmation and Django's
-    built-in password validators (length, similarity, common-password, etc.)."""
+    """Registration serializer with password confirmation and built-in validators."""
 
     password = serializers.CharField(write_only=True, style={"input_type": "password"})
     password_confirm = serializers.CharField(write_only=True, style={"input_type": "password"})

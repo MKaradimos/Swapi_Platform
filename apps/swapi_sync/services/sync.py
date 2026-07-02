@@ -150,12 +150,7 @@ def sync_characters(client: SwapiClient, result: SyncResult) -> None:
 
 
 def run_full_sync(client: SwapiClient | None = None) -> SyncResult:
-    """
-    Sync the entire catalog from SWAPI: films, then starships, then
-    characters (this order satisfies the M2M dependency chain). Returns a
-    SyncResult summarising what happened, including any per-record errors
-    that were swallowed so the rest of the sync could continue.
-    """
+    """Sync films → starships → characters (M2M dependency order). Returns a SyncResult."""
     client = client or SwapiClient()
     result = SyncResult()
 

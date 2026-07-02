@@ -21,13 +21,7 @@ logger = logging.getLogger("apps.swapi_sync.tasks")
     retry_jitter=True,
 )
 def sync_swapi_catalog(self):
-    """
-    Full catalog sync from SWAPI (films -> starships -> characters).
-
-    Automatically retried with exponential backoff if SWAPI is
-    unreachable; individual record-level failures are captured in the
-    result rather than aborting the whole run.
-    """
+    """Full catalog sync: films → starships → characters, with per-record error capture."""
     logger.info("sync_swapi_catalog task started (attempt %s)", self.request.retries + 1)
     result = run_full_sync()
     if result.errors:

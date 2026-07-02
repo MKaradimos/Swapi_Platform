@@ -69,13 +69,7 @@ class _VotableViewSetMixin:
 
 
 class FilmViewSet(_VotableViewSetMixin, viewsets.ReadOnlyModelViewSet):
-    """
-    Read-only catalog of films, plus a `/vote/` action.
-
-    Films are populated exclusively via the SWAPI sync process (see
-    apps.swapi_sync) rather than direct create/update/delete through this
-    API.
-    """
+    """Read-only film catalog with vote action. Populated via sync only."""
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filterset_fields = ["episode_id"]

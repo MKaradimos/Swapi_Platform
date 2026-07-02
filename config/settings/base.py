@@ -1,11 +1,4 @@
-"""
-Base settings shared across all environments.
-
-Environment-specific overrides live in development.py, production.py,
-and test.py. Configuration values are read from environment variables
-(12-factor app style) via python-decouple, with sensible local defaults
-so the project runs out of the box in development.
-"""
+"""Base settings shared across all environments. Overrides in development/production/test.py."""
 
 from datetime import timedelta
 from pathlib import Path

@@ -11,14 +11,7 @@ class SyncTriggerResponseSerializer(serializers.Serializer):
 
 
 class TriggerSyncView(APIView):
-    """
-    Kick off an asynchronous full catalog sync from SWAPI via Celery.
-
-    Returns immediately with the Celery task id rather than blocking the
-    request for however long the sync takes — a request-blocking sync
-    would be a poor pattern for a production API.
-    Restricted to staff users since it mutates the shared catalog dataset.
-    """
+    """Trigger an async full catalog sync via Celery. Admin only."""
 
     permission_classes = [permissions.IsAdminUser]
     throttle_scope = "sync"

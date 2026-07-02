@@ -43,14 +43,7 @@ def _error_code_for(exc):
 
 
 def custom_exception_handler(exc, context):
-    """
-    Wraps DRF's default exception handler to normalise the response body
-    and to gracefully handle a few exception types DRF doesn't manage by
-    default (ServiceUnavailableError, ExternalAPIError, plain Http404 /
-    PermissionDenied raised from inside services rather than views).
-    """
-    # Translate non-DRF exceptions DRF doesn't know how to render into
-    # DRF equivalents so the default handler can build a Response for them.
+    """Normalise all API errors to a consistent JSON shape."""
     if isinstance(exc, ServiceUnavailableError):
         response = Response(status=503)
         response.data = {"detail": str(exc) or "Upstream service unavailable."}
