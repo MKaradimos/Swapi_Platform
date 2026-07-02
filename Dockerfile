@@ -39,7 +39,9 @@ COPY --chown=appuser:appuser . .
 COPY --chown=appuser:appuser docker/entrypoint.sh /app/docker/entrypoint.sh
 RUN chmod +x /app/docker/entrypoint.sh
 
-RUN mkdir -p /app/staticfiles && chown -R appuser:appuser /app/staticfiles
+RUN mkdir -p /app/staticfiles /app/htmlcov \
+    && chown -R appuser:appuser /app/staticfiles /app/htmlcov \
+    && chmod -R 755 /app
 
 USER appuser
 
